@@ -1,0 +1,32 @@
+<%- include('partials/header', { title: 'Register — Salon' }) %>
+
+<section class="auth-card">
+  <h1>Create an account</h1>
+  <p class="lede">Enter the gymnasium.</p>
+
+  <% if (error) { %>
+    <div class="error" role="alert"><%= error %></div>
+  <% } %>
+
+  <form method="POST" action="/register" novalidate>
+    <%# SEC[CWE-352]: CSRF token, validated server-side by csrfMiddleware. %>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <label for="username">Username</label>
+    <%# SEC[CWE-79]: EJS interpolation auto-escapes user values. Raw output should be used only for trusted partials, never for user input. %>
+    <input type="text" id="username" name="username" value="<%= username %>"
+           required minlength="3" maxlength="30" pattern="[a-zA-Z0-9_-]+"
+           autocomplete="username">
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password"
+           required minlength="8" maxlength="128"
+           autocomplete="new-password">
+
+    <button type="submit">Register</button>
+  </form>
+
+  <p class="alt">Already have an account? <a href="/login">Log in</a>.</p>
+</section>
+
+<%- include('partials/footer') %>

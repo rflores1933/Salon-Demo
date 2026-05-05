@@ -1,0 +1,155 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'EB Garamond', Georgia, serif;
+  background: #14142b;
+  color: #e8e6e3;
+  min-height: 100vh;
+  line-height: 1.65;
+}
+
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 4rem 2rem 6rem;
+}
+
+h1, h2 {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: #f5f1e8;
+}
+
+h1 {
+  font-size: 2.4rem;
+  margin: 0 0 0.25rem;
+}
+
+h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #c4a74e;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+
+p, label {
+  color: #b8b5b0;
+}
+
+a {
+  color: #c4a74e;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+a:hover { border-bottom-color: #c4a74e; }
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #1d1d3d;
+  border: 1px solid #2e2e54;
+  color: #e8e6e3;
+  font-family: inherit;
+  font-size: 1rem;
+  margin: 0.5rem 0 1.5rem;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #c4a74e;
+}
+
+button {
+  padding: 0.7rem 1.5rem;
+  background: #c4a74e;
+  border: 1px solid #c4a74e;
+  color: #14142b;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover { background: #d4b75e; border-color: #d4b75e; }
+
+button.ghost {
+  background: transparent;
+  color: #c4a74e;
+  font-size: 0.75rem;
+  padding: 0.45rem 1rem;
+}
+
+button.ghost:hover { background: #c4a74e; color: #14142b; }
+
+.error {
+  padding: 0.9rem 1.1rem;
+  background: #2a1a1a;
+  border-left: 3px solid #c44e4e;
+  color: #e8b5b5;
+  margin-bottom: 1.5rem;
+}
+
+.auth-card { margin-top: 3rem; }
+.auth-card .alt { margin-top: 2rem; font-size: 0.95rem; }
+
+.gym-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 1px solid #2e2e54;
+  padding-bottom: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.gym-header .welcome { margin: 0; }
+
+.active-intention {
+  border-left: 3px solid #c4a74e;
+  padding: 0.4rem 0 0.4rem 1.1rem;
+  margin: 1rem 0 1.5rem;
+  font-size: 1.25rem;
+  font-style: italic;
+  color: #f5f1e8;
+}
+
+.intention-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.intention-list li {
+  padding: 1rem 0;
+  border-bottom: 1px solid #2e2e54;
+}
+
+.intention-list li:last-child { border-bottom: none; }
+
+.intention-list strong {
+  display: block;
+  color: #c4a74e;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.3rem;
+}
+
+.intention-body {
+  font-size: 1.05rem;
+}
+
+.empty {
+  font-style: italic;
+  color: #6e6b66;
+}
