@@ -5,7 +5,7 @@ A distraction-free study platform. Log in, set an intention for what you're work
 ## Run it locally
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/salon-demo.git
+git clone https://github.com/rflores1933/Salon-Demo.git
 cd salon-demo
 npm install
 
