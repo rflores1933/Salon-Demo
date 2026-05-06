@@ -4,7 +4,6 @@ const db = require('../db');
 
 const router = express.Router();
 
-// ===== Security configuration =====
 
 // SEC[CWE-916]: bcrypt cost factor of 12. bcrypt is a deliberately slow,
 // salted, adaptive password hash. Cost 12 keeps login response under
@@ -27,7 +26,6 @@ const USERNAME_PATTERN = /^[a-zA-Z0-9_-]{3,30}$/;
 // a real-but-failed login. Defeats username enumeration via timing analysis.
 const DUMMY_HASH = bcrypt.hashSync('dummy_password_for_timing_safety', BCRYPT_COST);
 
-// ===== Validation helpers =====
 
 // SEC[CWE-20]: Centralized server-side input validation. Client-side
 // validation in the form (HTML pattern attribute, etc.) is a UX courtesy,
@@ -52,7 +50,6 @@ function validatePassword(password) {
   return null;
 }
 
-// ===== Prepared statements =====
 
 // SEC[CWE-89]: All queries below use parameter binding via prepared
 // statements. User input never reaches SQL as a string. Compiled once
@@ -62,7 +59,6 @@ const insertUser = db.prepare(
 );
 const findUserByUsername = db.prepare('SELECT * FROM users WHERE username = ?');
 
-// ===== Registration =====
 
 router.get('/register', (req, res) => {
   if (req.session.userId) return res.redirect('/gymnasium');
@@ -122,7 +118,6 @@ router.post('/register', async (req, res, next) => {
   }
 });
 
-// ===== Login =====
 
 router.get('/login', (req, res) => {
   if (req.session.userId) return res.redirect('/gymnasium');
@@ -171,7 +166,6 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-// ===== Logout =====
 
 router.post('/logout', (req, res, next) => {
   // SEC[CWE-613]: Server-side session destruction on logout. Just clearing

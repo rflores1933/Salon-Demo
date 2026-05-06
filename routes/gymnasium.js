@@ -69,7 +69,7 @@ router.post('/intentions', (req, res, next) => {
     // SEC[CWE-639]: The user_id used for both clear and insert comes from
     // req.session.userId, which is set server-side at login. The client
     // never sends a user_id. This makes Insecure Direct Object Reference
-    // (IDOR) structurally impossible — there is no parameter for an
+    // (IDOR) structurally impossible there is no parameter for an
     // attacker to manipulate.
     //
     // The transaction wraps clear+insert so the gymnasium never sees a
@@ -118,7 +118,7 @@ router.post('/whiteboard', (req, res, next) => {
     // SEC[CWE-359]: Whiteboard contents are stored in session memory
     // only — never written to disk, never persisted to the database.
     // When the session ends (logout, expiry, server restart), the
-    // contents are destroyed. v0.0.1 deliberately stores no
+    // contents are destroyed. the demo deliberately stores no
     // user-generated content beyond the active session.
     req.session.whiteboard = body;
 
