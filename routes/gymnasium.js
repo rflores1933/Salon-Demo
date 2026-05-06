@@ -10,8 +10,6 @@ const router = express.Router();
 // skips the auth check.
 router.use(requireAuth);
 
-// ===== Prepared statements =====
-
 // SEC[CWE-89]: Prepared statements only. User input is bound, never
 // concatenated into SQL.
 const insertIntention = db.prepare(
@@ -20,13 +18,6 @@ const insertIntention = db.prepare(
 const clearUserIntentions = db.prepare(
   'DELETE FROM intentions WHERE user_id = ?'
 );
-const getCurrentIntentions = db.prepare(`
-  SELECT u.username, i.body, i.created_at
-  FROM intentions i
-  JOIN users u ON u.id = i.user_id
-  WHERE i.id IN (SELECT MAX(id) FROM intentions GROUP BY user_id)
-  ORDER BY i.created_at DESC
-`);
 const getMyIntention = db.prepare(`
   SELECT body, created_at FROM intentions
   WHERE user_id = ?
@@ -34,14 +25,12 @@ const getMyIntention = db.prepare(`
   LIMIT 1
 `);
 
-// ===== Validation =====
-
 const MIN_INTENTION_LENGTH = 1;
 const MAX_INTENTION_LENGTH = 140;
+const MAX_WHITEBOARD_LENGTH = 5000;
 
 // SEC[CWE-20]: Server-side validation. Bounded length defends against
-// storage abuse and unbounded rendering. The 140-char cap is also a
-// design constraint that keeps intentions short and intentional.
+// storage abuse and unbounded rendering.
 function validateIntention(body) {
   if (typeof body !== 'string') return 'Intention is required.';
   const trimmed = body.trim();
@@ -52,31 +41,25 @@ function validateIntention(body) {
   return null;
 }
 
-// ===== View the gymnasium =====
-
 router.get('/', (req, res) => {
-  const intentions = getCurrentIntentions.all();
   const myIntention = getMyIntention.get(req.session.userId);
   res.render('gymnasium', {
     username: req.session.username,
-    intentions,
     myIntention: myIntention || null,
+    whiteboard: req.session.whiteboard || '',
     error: null
   });
 });
-
-// ===== Create or replace intention =====
 
 router.post('/intentions', (req, res, next) => {
   try {
     const error = validateIntention(req.body.body);
     if (error) {
-      const intentions = getCurrentIntentions.all();
       const myIntention = getMyIntention.get(req.session.userId);
       return res.status(400).render('gymnasium', {
         username: req.session.username,
-        intentions,
         myIntention: myIntention || null,
+        whiteboard: req.session.whiteboard || '',
         error
       });
     }
@@ -104,14 +87,41 @@ router.post('/intentions', (req, res, next) => {
   }
 });
 
-// ===== Clear intention =====
-
 router.post('/intentions/clear', (req, res, next) => {
   try {
     // SEC[CWE-639]: Same defense as above — user_id sourced from session,
     // not from any client input. A user can only ever clear their own
     // intentions; the WHERE clause guarantees it.
     clearUserIntentions.run(req.session.userId);
+
+    // SEC[CWE-359]: When the user clears their intention, the session
+    // whiteboard is cleared with it. No user-generated scratch content
+    // outlives the active session focus.
+    req.session.whiteboard = '';
+
+    res.redirect('/gymnasium');
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/whiteboard', (req, res, next) => {
+  try {
+    const body = typeof req.body.body === 'string' ? req.body.body : '';
+
+    // SEC[CWE-20]: Server-side length validation. Prevents unbounded
+    // session memory growth from a single malicious or buggy client.
+    if (body.length > MAX_WHITEBOARD_LENGTH) {
+      return res.status(400).redirect('/gymnasium');
+    }
+
+    // SEC[CWE-359]: Whiteboard contents are stored in session memory
+    // only — never written to disk, never persisted to the database.
+    // When the session ends (logout, expiry, server restart), the
+    // contents are destroyed. v0.0.1 deliberately stores no
+    // user-generated content beyond the active session.
+    req.session.whiteboard = body;
+
     res.redirect('/gymnasium');
   } catch (err) {
     next(err);

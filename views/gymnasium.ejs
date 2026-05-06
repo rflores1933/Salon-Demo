@@ -1,10 +1,7 @@
-<%- include('partials/header', { title: 'The Gymnasium — Salon' }) %>
+<%- include('partials/header', { title: 'The Gymnasium — Salon', bodyClass: 'gym' }) %>
 
 <header class="gym-header">
-  <div>
-    <h1>The Gymnasium</h1>
-    <p class="welcome">Welcome, <%= username %>.</p>
-  </div>
+  <h1>Gymnasium</h1>
   <form method="POST" action="/logout" class="logout-form">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <button type="submit" class="ghost">Log out</button>
@@ -16,44 +13,29 @@
 <% } %>
 
 <section class="my-intention">
-  <h2>Your intention</h2>
-
   <% if (myIntention) { %>
     <blockquote class="active-intention"><%= myIntention.body %></blockquote>
-
-    <form method="POST" action="/gymnasium/intentions/clear">
+    <form method="POST" action="/gymnasium/intentions/clear" class="intention-clear">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit" class="ghost">Clear and start fresh</button>
+      <button type="submit" class="ghost">Clear</button>
     </form>
   <% } else { %>
     <form method="POST" action="/gymnasium/intentions" class="intention-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <label for="body">What are you working on?</label>
       <input type="text" id="body" name="body" maxlength="140" required
-             placeholder="Sitting with a hard problem" autofocus
+             placeholder="What are you working on?" autofocus
              autocomplete="off">
-      <button type="submit">Set intention</button>
+      <button type="submit">Set</button>
     </form>
   <% } %>
 </section>
 
-<section class="others">
-  <h2>Others in the gymnasium</h2>
-
-  <% const others = intentions.filter(function(i) { return i.username !== username; }); %>
-
-  <% if (others.length === 0) { %>
-    <p class="empty">It's quiet right now. You're alone in the gymnasium.</p>
-  <% } else { %>
-    <ul class="intention-list">
-      <% others.forEach(function(i) { %>
-        <li>
-          <strong><%= i.username %></strong>
-          <span class="intention-body"><%= i.body %></span>
-        </li>
-      <% }); %>
-    </ul>
-  <% } %>
+<section class="whiteboard">
+  <form method="POST" action="/gymnasium/whiteboard">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <textarea name="body" maxlength="5000" placeholder="A space to think."><%= whiteboard %></textarea>
+    <button type="submit" class="ghost">Save</button>
+  </form>
 </section>
 
 <%- include('partials/footer') %>
